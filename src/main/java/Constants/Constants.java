@@ -12,7 +12,7 @@ public class Constants {
         public static String version = "5.81";
     }
     public static class ValuesForPhoto {
-        public static String token_user_photo = "a8a2d03c83969babeab9f7821b3ec60835fb21bb0ab2c264c418505b62e3af7f7f0ce98dcb645e767de85";
+        public static String token_user_photo = "";
         public static String token_app = "";
         public static String titleAlbom = "TestAlbom";
     }
