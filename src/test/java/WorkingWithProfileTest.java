@@ -17,7 +17,7 @@ import static Constants.Constants.pathToResp.RESP_GET_INFO_PROFILE;
 import static com.google.gson.JsonParser.parseString;
 import static io.restassured.RestAssured.given;
 
-public class WorkingWithProfile extends TestConfig {
+public class WorkingWithProfileTest extends TestConfig {
     @Test
     public void getProfile() throws IOException {
         //given

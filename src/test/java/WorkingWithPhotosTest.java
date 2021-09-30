@@ -18,7 +18,7 @@ import static Constants.Constants.pathToResp.RESP_MAKE_COVER;
 import static com.google.gson.JsonParser.parseString;
 import static io.restassured.RestAssured.given;
 
-public class WorkingWithPhotos extends TestConfig {
+public class WorkingWithPhotosTest extends TestConfig {
     @Test
     public void WorkingWithPhoto() throws InterruptedException, IOException {
         //create privet Album
