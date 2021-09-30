@@ -1,0 +1,18 @@
+{
+  "response": {
+    "first_name": "Иван",
+    "id": 675948635,
+    "last_name": "Иванов",
+    "home_town": "",
+    "status": "",
+    "bdate": "1.1.1990",
+    "bdate_visibility": 1,
+    "country": {
+      "id": 1,
+      "title": "Россия"
+    },
+    "phone": "+7 *** *** ** 68",
+    "relation": 0,
+    "sex": 2
+  }
+}
