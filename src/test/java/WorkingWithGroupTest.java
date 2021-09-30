@@ -14,7 +14,7 @@ import static Constants.Constants.pathToResp.*;
 import static com.google.gson.JsonParser.parseString;
 import static io.restassured.RestAssured.given;
 
-public class WorkingWithGroup extends TestConfig {
+public class WorkingWithGroupTest extends TestConfig {
     @Test
     public void GroupTest() throws InterruptedException, IOException {
         //add topic
