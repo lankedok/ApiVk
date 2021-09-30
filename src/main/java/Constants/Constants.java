@@ -40,7 +40,6 @@ public class Constants {
         public static String CREATE_CHAT = "messages.createChat";
     }
     public static class pathToResp {
-        public static String RESP_GET_INFO_PROFILE = "src/main/resources/initial/get-profile-resp.json";
         public static String RESP_EDIT_INFO_PROFILE = "src/main/resources/initial/edit-profile-resp.json";
         public static String RESP_MAKE_COVER = "src/main/resources/initial/make-cover-resp.json";
         public static String RESP_DELETE_ALBUM = "src/main/resources/initial/delete-albom-resp.json";

@@ -13,34 +13,10 @@ import java.util.Map;
 import static Constants.Constants.Actions.*;
 import static Constants.Constants.pathToPhoto.PATH_TO_PHOTO;
 import static Constants.Constants.pathToResp.RESP_EDIT_INFO_PROFILE;
-import static Constants.Constants.pathToResp.RESP_GET_INFO_PROFILE;
 import static com.google.gson.JsonParser.parseString;
 import static io.restassured.RestAssured.given;
 
 public class WorkingWithProfileTest extends TestConfig {
-    @Test
-    public void getProfile() throws IOException {
-        //given
-        File file = new File(RESP_GET_INFO_PROFILE);
-        String expectedResponse = new String(Files.readAllBytes(file.toPath()));
-        String expectedJsonResponse = parseString(expectedResponse).getAsJsonObject().toString();
-
-        //act
-        Response response = given()
-                .params(createParams())
-                .get(VK_GET_PROFILE_INFO);
-
-        //assertions
-        int statusCode = response.getStatusCode();
-        String actualJsonResponse = response.asString();
-
-        print(expectedJsonResponse, "expectedJsonResponse");
-        print(actualJsonResponse, "actualJsonResponse");
-
-        Assert.assertEquals(200, statusCode);
-        Assert.assertEquals(expectedJsonResponse, actualJsonResponse);
-    }
-
     @Test
     public void editProfile() throws IOException, InterruptedException {
         //given
@@ -49,6 +25,12 @@ public class WorkingWithProfileTest extends TestConfig {
         String expectedJsonResponse = parseString(expectedResponse).getAsJsonObject().toString();
 
         //act
+        given()
+                .params(createParams())
+                .get(VK_GET_PROFILE_INFO)
+                .then()
+                .statusCode(200);
+
         Map<String, String> additionalParams = createParams(
                 Pair.of("home_town", "NY"),
                 Pair.of("status", "test"));
