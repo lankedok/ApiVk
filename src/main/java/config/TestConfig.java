@@ -1,8 +1,6 @@
 package config;
 
 import io.restassured.RestAssured;
-import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.specification.ResponseSpecification;
 import org.apache.commons.lang3.tuple.Pair;
 import org.testng.annotations.BeforeClass;
 
@@ -12,10 +10,6 @@ import java.util.Map;
 import static Constants.Constants.RunVerible.*;
 
 public class TestConfig {
-
-    protected ResponseSpecification responseSpecification = new ResponseSpecBuilder()
-            .expectStatusCode(200)
-            .build();
 
     @BeforeClass
     public void setUp() {
