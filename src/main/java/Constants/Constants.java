@@ -7,7 +7,7 @@ public class Constants {
         public static String server = "https://api.vk.com/method/";
         public static String user_id = "675948635";
         public static String version = "5.81";
-        public static String token = "74d37b634b53c5587a008c2c6b11083e64bf3e872ce80b018cfdd05bb17deeed58d42c379dd17e22931c2";
+        public static String token = "9e644a6174b279a73acf8d810534ad7a0fa5eecf4e1850d3796efbd8f0c823d4a70be3c5c692c6f1a0fd7";
         public static String group_id = "207566036";
     }
 
@@ -39,15 +39,7 @@ public class Constants {
 
         public static String CREATE_CHAT = "messages.createChat";
     }
-    public static class pathToResp {
-        public static String RESP_EDIT_INFO_PROFILE = "src/main/resources/initial/edit-profile-resp.json";
-        public static String RESP_MAKE_COVER = "src/main/resources/initial/make-cover-resp.json";
-        public static String RESP_DELETE_ALBUM = "src/main/resources/initial/delete-albom-resp.json";
-        public static String RESP_FIX_TOPIC = "src/main/resources/initial/fix-topic-resp.json";
-        public static String RESP_EDIT_COMMENT_TOPIC = "src/main/resources/initial/edit-comment-resp.json";
-        public static String RESP_DELETE_COMMENT_TOPIC = "src/main/resources/initial/delete-comment-resp.json";
-        public static String RESP_DELETE_TOPIC = "src/main/resources/initial/delete-topic-resp.json";
-    }
+
     public static class pathToPhoto {
         public static String PATH_TO_PHOTO = "src/main/resources/initial/photo-to-upload.jpg";
     }

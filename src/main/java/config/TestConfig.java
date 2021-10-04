@@ -1,13 +1,15 @@
 package config;
 
 import io.restassured.RestAssured;
-import org.apache.commons.lang3.tuple.Pair;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import org.testng.annotations.BeforeClass;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static Constants.Constants.RunVerible.*;
+import static com.google.gson.JsonParser.parseString;
+import static io.restassured.RestAssured.given;
 
 public class TestConfig {
 
@@ -17,32 +19,33 @@ public class TestConfig {
 
     }
 
-    @SafeVarargs
-    protected final Map<String, String> createParams(Pair<String, String>... pairs) {
-        Map<String, String> params = new HashMap<>();
-        params.put("v", version);
-        params.put("access_token", token);
-        params.put("user_id", user_id);
-        for (Pair<String, String> pair : pairs) {
-            params.put(pair.getLeft(), pair.getRight());
-        }
-        return params;
-    }
-    @SafeVarargs
-    protected final Map<String, String> createParamsGroup(Pair<String, String>... pairs) {
-        Map<String, String> params = new HashMap<>();
-        params.put("v", version);
-        params.put("access_token", token);
-        params.put("user_id", user_id);
-        params.put("group_id", group_id);
-        for (Pair<String, String> pair : pairs) {
-            params.put(pair.getLeft(), pair.getRight());
-        }
-        return params;
+    protected static RequestSpecification requestSpecification() {
+        return given()
+                .param("v", version)
+                .param("access_token", token)
+                .param("user_id", user_id);
     }
 
-    protected void print(String value, String descr) {
-        System.out.printf("%s: '%s'\n", descr, value);
+    protected static RequestSpecification requestSpecificationGroup() {
+        return given()
+                .param("v", version)
+                .param("access_token", token)
+                .param("user_id", user_id)
+                .param("group_id", group_id);
     }
 
+    protected ResponseSpecification responseSpecification = new ResponseSpecBuilder()
+            .expectStatusCode(200)
+            .build();
+
+    protected void waitSomeTime() throws InterruptedException {
+        Thread.sleep(2500);
+    }
+
+    protected int getIntResponseCode(Response response) {
+        return parseString(response.asString())
+                .getAsJsonObject()
+                .getAsJsonPrimitive("response")
+                .getAsInt();
+    }
 }

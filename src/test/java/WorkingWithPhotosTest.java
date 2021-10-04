@@ -1,34 +1,30 @@
 import com.google.gson.JsonObject;
 import config.TestConfig;
 import io.restassured.response.Response;
-import org.apache.commons.lang3.tuple.Pair;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Map;
 
 import static Constants.Constants.Actions.*;
 import static Constants.Constants.RunVerible.user_id;
 import static Constants.Constants.pathToPhoto.PATH_TO_PHOTO;
-import static Constants.Constants.pathToResp.RESP_DELETE_ALBUM;
-import static Constants.Constants.pathToResp.RESP_MAKE_COVER;
 import static com.google.gson.JsonParser.parseString;
 import static io.restassured.RestAssured.given;
 
 public class WorkingWithPhotosTest extends TestConfig {
     @Test
-    public void WorkingWithPhoto() throws InterruptedException, IOException {
-        //create privet Album
-        Map<String, String> additionalParams = createParams(
-                Pair.of("title", "Test Album"),
-                Pair.of("privacy_view", "3"));
-        Response createPhotoAlbum = given()
-                .params(additionalParams)
-                .get(CREATE_ALBUM);
-        Thread.sleep(2500);
+    public void WorkingWithPhoto() throws IOException, InterruptedException {
+        Response createPhotoAlbum = requestSpecification()
+                .param("title", "Test Album")
+                .param("privacy_view", "3")
+                .get(CREATE_ALBUM)
+                .then()
+                .spec(responseSpecification)
+                .extract()
+                .response();
+        waitSomeTime();
 
         String albumId = parseString(createPhotoAlbum.asString())
                 .getAsJsonObject()
@@ -36,13 +32,14 @@ public class WorkingWithPhotosTest extends TestConfig {
                 .get("id")
                 .getAsString();
 
-        //add photo to album
-        additionalParams = createParams(
-                Pair.of("album_id", albumId));
-        Response uploadServerUrl = given()
-                .params(additionalParams)
-                .get(UPLOAD_PHOTO);
-        Thread.sleep(2500);
+        Response uploadServerUrl = requestSpecification()
+                .param("album_id", albumId)
+                .get(UPLOAD_PHOTO)
+                .then()
+                .spec(responseSpecification)
+                .extract()
+                .response();
+        waitSomeTime();
         String uploadUrl = parseString(uploadServerUrl.asString())
                 .getAsJsonObject()
                 .getAsJsonObject("response")
@@ -52,8 +49,12 @@ public class WorkingWithPhotosTest extends TestConfig {
         File file = new File(PATH_TO_PHOTO);
         Response uploadedPhotoInfo = given()
                 .multiPart("photo", file)
-                .post(uploadUrl);
-        Thread.sleep(2500);
+                .post(uploadUrl)
+                .then()
+                .spec(responseSpecification)
+                .extract()
+                .response();
+        waitSomeTime();
         JsonObject uploadedResponse = parseString(uploadedPhotoInfo.asString())
                 .getAsJsonObject();
 
@@ -61,17 +62,19 @@ public class WorkingWithPhotosTest extends TestConfig {
         String hash = uploadedResponse.get("hash").getAsString();
         String photosList = uploadedResponse.get("photos_list").getAsString();
 
-        additionalParams = createParams(
-                Pair.of("server", server),
-                Pair.of("hash", hash),
-                Pair.of("album_id", albumId),
-                Pair.of("photos_list", photosList));
 
-        Response addedPhotoResponse = given()
-                .params(additionalParams)
-                .post(SAVE_PHOTO);
+        Response addedPhotoResponse = requestSpecification()
+                .param("server", server)
+                .param("hash", hash)
+                .param("album_id", albumId)
+                .param("photos_list", photosList)
+                .post(SAVE_PHOTO)
+                .then()
+                .spec(responseSpecification)
+                .extract()
+                .response();
 
-        Thread.sleep(2500);
+        waitSomeTime();
         String photoId = parseString(addedPhotoResponse.asString())
                 .getAsJsonObject()
                 .getAsJsonArray("response")
@@ -79,92 +82,77 @@ public class WorkingWithPhotosTest extends TestConfig {
                 .getAsJsonObject()
                 .get("id")
                 .getAsString();
-        //make cover
-        additionalParams = createParams(
-                Pair.of("album_id", albumId),
-                Pair.of("photo_id", photoId)
-                );
-        Response makeCoverResponse = given()
-                .params(additionalParams)
-                .get(MAKE_COVER);
-        Thread.sleep(2500);
-        file = new File(RESP_MAKE_COVER);
-        String expectedResponse = new String(Files.readAllBytes(file.toPath()));
-        String expectedJsonResponse = parseString(expectedResponse).getAsJsonObject().toString();
-        String actualJsonResponse = makeCoverResponse.asString();
-        Assert.assertEquals(expectedJsonResponse, actualJsonResponse);
-        //comment photo
-        additionalParams = createParams(
-                Pair.of("photo_id", photoId),
-                Pair.of("message", "test comment"));
-        Response createComment = given()
-                .params(additionalParams)
-                .get(CREATE_COMMENT);
-        Thread.sleep(2500);
-        //put tag
-        additionalParams = createParams(
-                Pair.of("owner_id", user_id),
-                Pair.of("photo_id", photoId),
-                Pair.of("x", "25"),
-                Pair.of("x2", "75"),
-                Pair.of("y","25"),
-                Pair.of("y2","75"));
-        given()
-                .params(additionalParams)
+        Response makeCoverResponse = requestSpecification()
+                .param("album_id", albumId)
+                .param("photo_id", photoId)
+                .get(MAKE_COVER)
+                .then()
+                .spec(responseSpecification)
+                .extract()
+                .response();
+        waitSomeTime();
+
+        Assert.assertEquals(1, getIntResponseCode(makeCoverResponse));
+        requestSpecification()
+                .param("photo_id", photoId)
+                .param("message", "test comment")
+                .get(CREATE_COMMENT)
+                .then()
+                .spec(responseSpecification);
+        waitSomeTime();
+        requestSpecification()
+                .param("owner_id", user_id)
+                .param("photo_id", photoId)
+                .param("x", "25")
+                .param("x2", "75")
+                .param("y", "25")
+                .param("y2", "75")
                 .get(PUT_TAG)
                 .then()
-                .statusCode(200);
-        Thread.sleep(2500);
+                .spec(responseSpecification);
+        waitSomeTime();
 
-        //create public album
-        additionalParams = createParams(
-                Pair.of("title", "Public Test Album"));
-        createPhotoAlbum = given()
-                .params(additionalParams)
-                .get(CREATE_ALBUM);
-        Thread.sleep(2500);
+        createPhotoAlbum = requestSpecification()
+                .param("title", "Public Test Album")
+                .get(CREATE_ALBUM)
+                .then()
+                .spec(responseSpecification)
+                .extract()
+                .response();
+        waitSomeTime();
 
         String publicAlbumId = parseString(createPhotoAlbum.asString())
                 .getAsJsonObject()
                 .getAsJsonObject("response")
                 .get("id")
                 .getAsString();
-        Thread.sleep(2500);
-        //move photo
-        additionalParams = createParams(
-                Pair.of("photo_id", photoId),
-                Pair.of("target_album_id", publicAlbumId));
-        given()
-                .params(additionalParams)
+        waitSomeTime();
+        requestSpecification()
+                .param("photo_id", photoId)
+                .param("target_album_id", publicAlbumId)
                 .get(PHOTO_MOVE)
                 .then()
-                .statusCode(200);
-        Thread.sleep(2500);
+                .spec(responseSpecification);
+        waitSomeTime();
 
-        //delete album
-        additionalParams = createParams(
-                Pair.of("album_id", albumId));
-        Response deleteAlbumResponse = given()
-                .params(additionalParams)
-                .get(DELETE_ALBUM);
-        Thread.sleep(2500);
-        file = new File(RESP_DELETE_ALBUM);
-        expectedResponse = new String(Files.readAllBytes(file.toPath()));
-        expectedJsonResponse = parseString(expectedResponse).getAsJsonObject().toString();
-        actualJsonResponse = deleteAlbumResponse.asString();
-        Assert.assertEquals(expectedJsonResponse, actualJsonResponse);
+        Response deleteAlbumResponse = requestSpecification()
+                .param("album_id", albumId)
+                .get(DELETE_ALBUM)
+                .then()
+                .spec(responseSpecification)
+                .extract()
+                .response();
+        waitSomeTime();
+        Assert.assertEquals(1, getIntResponseCode(deleteAlbumResponse));
 
         //return the application to its original state
-        additionalParams = createParams(
-                Pair.of("album_id", publicAlbumId));
-        deleteAlbumResponse = given()
-                .params(additionalParams)
-                .get(DELETE_ALBUM);
-        Thread.sleep(2500);
-        file = new File(RESP_DELETE_ALBUM);
-        expectedResponse = new String(Files.readAllBytes(file.toPath()));
-        expectedJsonResponse = parseString(expectedResponse).getAsJsonObject().toString();
-        actualJsonResponse = deleteAlbumResponse.asString();
-        Assert.assertEquals(expectedJsonResponse, actualJsonResponse);
+        deleteAlbumResponse = requestSpecification()
+                .param("album_id", publicAlbumId)
+                .get(DELETE_ALBUM)
+                .then()
+                .spec(responseSpecification)
+                .extract()
+                .response();
+        Assert.assertEquals(1, getIntResponseCode(deleteAlbumResponse));
     }
 }
