@@ -7,7 +7,7 @@ public class Constants {
         public static String server = "https://api.vk.com/method/";
         public static String user_id = "675948635";
         public static String version = "5.81";
-        public static String token = "9e644a6174b279a73acf8d810534ad7a0fa5eecf4e1850d3796efbd8f0c823d4a70be3c5c692c6f1a0fd7";
+        public static String token = "8252d212a86fd5d622214e5c120f04fbd68faece596c794b6a3967f67b929c8f59084f58208d6ad5d1106";
         public static String group_id = "207566036";
     }
 
