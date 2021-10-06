@@ -38,6 +38,7 @@ public class Constants {
         public static String DELETE_TOPIC = "board.deleteTopic";
 
         public static String CREATE_CHAT = "messages.createChat";
+        public static String TEST = "messages.createChat";
     }
 
     public static class pathToPhoto {
