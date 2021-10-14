@@ -1,5 +1,3 @@
-import config.TestConfig;
-
 public class WorkingWithMessages extends TestConfig {
 //    @Test
 //    public void Massage() {

@@ -1,5 +1,4 @@
 import com.google.gson.JsonObject;
-import config.TestConfig;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;

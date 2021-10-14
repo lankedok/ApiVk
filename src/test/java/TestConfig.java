@@ -1,5 +1,6 @@
-package config;
-
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.Step;
+import io.qameta.allure.selenide.AllureSelenide;
 import io.restassured.RestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.response.Response;
@@ -16,8 +17,9 @@ public class TestConfig {
     @BeforeClass
     public void setUp() {
         RestAssured.baseURI = server;
-
+        SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
     }
+
 
     protected static RequestSpecification requestSpecification() {
         return given()
@@ -37,7 +39,7 @@ public class TestConfig {
     protected ResponseSpecification responseSpecification = new ResponseSpecBuilder()
             .expectStatusCode(200)
             .build();
-
+    @Step
     protected void waitSomeTime() throws InterruptedException {
         Thread.sleep(2500);
     }

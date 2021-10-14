@@ -1,4 +1,4 @@
-import config.TestConfig;
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -9,16 +9,10 @@ import static Constants.Constants.Actions.*;
 import static com.google.gson.JsonParser.parseString;
 
 public class WorkingWithGroupTest extends TestConfig {
+
     @Test
     public void GroupTest() throws InterruptedException, IOException {
-        Response addTopicResponse = requestSpecificationGroup()
-                .param("title", "Куда пропадают какашки из лотка")
-                .param("text", "помогите!")
-                .get(ADD_TOPIC)
-                .then()
-                .spec(responseSpecification)
-                .extract()
-                .response();
+        Response addTopicResponse = createTopic();
         waitSomeTime();
         String topicId = parseString(addTopicResponse.asString())
                 .getAsJsonObject()
@@ -98,5 +92,20 @@ public class WorkingWithGroupTest extends TestConfig {
                 .extract()
                 .response();
         Assert.assertEquals(1, getIntResponseCode(deleteTopicResponse));
+    }
+
+    @Step(value = "Create topic")
+    public Response createTopic() {
+        return requestSpecificationGroup()
+                .param("title", "Куда пропадают какашки из лотка")
+                .param("text", "помогите!")
+                .get(ADD_TOPIC)
+                .then()
+                .log()
+                .body()
+                .spec(responseSpecification)
+                .extract()
+                .response();
+
     }
 }
